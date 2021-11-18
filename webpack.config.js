@@ -49,7 +49,7 @@ module.exports = (_, argv) => ({
       remotes: {},
       exposes: {
         '.': './src/components',
-        'components/Button': './src/components/Button/Button',
+        Button: './src/components/Button/Button',
       },
       shared: {
         ...deps,
