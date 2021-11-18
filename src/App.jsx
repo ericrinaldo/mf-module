@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Button } from './components';
-import './index.css';
-
-
 const App = () => (
   <div>
-    <Button>Testing</Button>
+    <a href="./storybook/">Storybook</a>
+    <br />
+    <a href="remoteEntry.js">remoteEntry.js</a>
   </div>
 );
 
