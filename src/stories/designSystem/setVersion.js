@@ -8,8 +8,8 @@ const introduction = path.resolve(__dirname, 'introduction.stories.mdx');
 fs.readFile(introduction, 'utf8', (error, data) => {
   if (error) return console.error(error);
 
-  const replaceThis = /## This is version: 1.2.3 <!-- replace in prebuild -->/;
-  const withThis = `## This is version: ${package.version} <!-- replace in prebuild -->`;
+  const replaceThis = /## Latest version: ([\s\S]*?) <!-- replace in prebuild -->/g;
+  const withThis = `## Latest version: ${package.version} <!-- replace in prebuild -->`;
 
   const newFile = data.replace(replaceThis, withThis);
 
