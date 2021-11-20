@@ -1,21 +1,20 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const path = require('path');
 
-const deps = require("./package.json").dependencies;
+const package = require('./package.json');
 
 
 module.exports = (_, argv) => ({
   output: {
     clean: true,
-    publicPath:
-      argv.mode === 'development'
-        ? "http://localhost:8080/"
-        : "https://mf-module.vercel.app/",
+    publicPath: `${package.cdn}/${package.name}/${package.version}/`,
+    path: __dirname + `/dist/modules/${package.name}/${package.version}`,
   },
 
   resolve: {
-    extensions: [".jsx", ".js", ".json"],
+    extensions: ['.jsx', '.js', '.json'],
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
   },
 
@@ -27,7 +26,7 @@ module.exports = (_, argv) => ({
     rules: [
       {
         test: /\.m?js/,
-        type: "javascript/auto",
+        type: 'javascript/auto',
         resolve: {
           fullySpecified: false,
         },
@@ -36,39 +35,45 @@ module.exports = (_, argv) => ({
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
         },
       },
       {
         test: /\.s?[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          (argv.mode === 'development') ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
       },
     ],
   },
 
   plugins: [
+    new HtmlWebPackPlugin({
+      template: './src/index.html',
+    }),
+    new MiniCssExtractPlugin(),
     new ModuleFederationPlugin({
-      name: "components",
-      filename: "remoteEntry.js",
+      name: 'components',
+      filename: 'remoteEntry.js',
       remotes: {},
       exposes: {
         '.': './src/components',
         './Button': './src/components/Button/Button',
       },
       shared: {
-        ...deps,
+        ...package.dependencies,
         react: {
           singleton: true,
-          requiredVersion: deps.react,
+          requiredVersion: package.dependencies.react,
         },
-        "react-dom": {
+        'react-dom': {
           singleton: true,
-          requiredVersion: deps["react-dom"],
+          requiredVersion: package.dependencies['react-dom'],
         },
       },
-    }),
-    new HtmlWebPackPlugin({
-      template: "./src/index.html",
     }),
   ],
 });
