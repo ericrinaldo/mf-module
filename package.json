@@ -1,6 +1,6 @@
 {
   "name": "design-system",
-  "version": "1.2.21",
+  "version": "1.2.22",
   "cdn": "https://cdn-at-s3.s3.eu-north-1.amazonaws.com/modules",
   "scripts": {
     "build": "webpack --mode production",
